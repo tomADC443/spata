@@ -1,16 +1,17 @@
-html,
+
 body {
+  margin: 0 auto;
   padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-image: linear-gradient(to top, #4ecdc4, #49c9c0, #45c4bb, #40c0b7, #3bbcb3);
+  background-attachment: fixed;
+  
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+button {
+  color: black;
+  text-align: center;
+  font-size: 1.4rem;
+  background-color: #FF6B6B;
+  border-radius: 5px;
+  border: none;
 }

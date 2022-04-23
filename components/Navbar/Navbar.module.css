@@ -1,0 +1,27 @@
+
+.navbar {
+
+  overflow: hidden;
+  background-color:#556270;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-item {
+  float: left;
+}
+
+.navbar-item a {
+  padding: 1rem 1rem;
+  display: block;
+  color: white;
+  text-align: center;
+  
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+.navbar-item a:hover {
+  background-color: #C44D58;
+}
