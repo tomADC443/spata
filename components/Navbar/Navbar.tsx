@@ -8,7 +8,7 @@ const Navbar = () => {
           <a href="/profile">Profile</a>
         </div>
         <div className={styles['navbar-item']}>
-          <a href="/demo">Demo</a>
+          <a href="/quiz">Demo</a>
         </div>
         <div className={styles['navbar-item']}>
           <AuthButtons></AuthButtons>
