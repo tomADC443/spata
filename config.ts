@@ -11,7 +11,6 @@ const getEnvironmentVariable = (environmentVariable: string): string => {
 
 const config = {
   DATABASE_URL: getEnvironmentVariable("DATABASE_URL"),
-  SHADOW_DATABASE_URL: getEnvironmentVariable("SHADOW_DATABASE_URL"),
   GOOGLE_CLIENT_ID: getEnvironmentVariable("GOOGLE_CLIENT_ID"),
   GOOGLE_CLIENT_SECRET: getEnvironmentVariable("GOOGLE_CLIENT_SECRET"),
   JWT_SECRET: getEnvironmentVariable("JWT_SECRET"),
