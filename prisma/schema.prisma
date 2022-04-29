@@ -1,6 +1,7 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,18 +9,33 @@ generator client {
 datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  //shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model Http_Codes {
-  id     String @id @default(cuid())
-  code   Int    @unique
+model HttpCode {
+  code   Int             @id @unique
   phrase String
+  users  User_HttpCode[]
 }
 
 model User {
-  id    String  @id @default(cuid())
-  name  String?
-  email String? @unique
-  image String?
+  id         String          @id @unique @default(cuid())
+  providerId String?         @unique
+  given_name String?
+  last_name  String?
+  email      String?         @unique
+  image      String?
+  httpCodes  User_HttpCode[]
+}
+
+model User_HttpCode {
+  user   User     @relation(fields: [userId], references: [id])
+  userId String
+  code   HttpCode @relation(fields: [codeId], references: [code])
+  codeId Int
+  right  Int      @default(0)
+  wrong  Int      @default(0)
+
+  @@id([codeId, userId])
+  @@map("User_HttpCodes")
 }

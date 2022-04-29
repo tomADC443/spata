@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import Navbar from "../components/Navbar/Navbar";
 import { useSession } from "next-auth/react"
+import Link from 'next/link'
 
 const Landing: NextPage = () => {
   const { data: session, status } = useSession()
@@ -9,10 +10,9 @@ const Landing: NextPage = () => {
   return (
     <div>
       <Navbar></Navbar>
-      {console.log(session)}
       {/* <h1>Hi {session?.user?.name || "Stranger"}</h1> */}
       <h2>
-        Click <a href="/quiz">here</a> to learn some http codes.
+        Click < Link href="/quiz">here</Link> to learn some http codes.
       </h2>
     </div>
   );
