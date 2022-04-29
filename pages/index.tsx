@@ -10,7 +10,7 @@ const Landing: NextPage = () => {
   return (
     <div>
       <Navbar></Navbar>
-      {/* <h1>Hi {session?.user?.name || "Stranger"}</h1> */}
+      { <h1>Hi {session?.user?.given_name || "Stranger"}</h1> }
       <h2>
         Click < Link href="/quiz">here</Link> to learn some http codes.
       </h2>
