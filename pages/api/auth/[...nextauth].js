@@ -51,14 +51,23 @@ export default NextAuth({
           },
         });
 
-        token.id = result.id
+        token = {
+          user: {
+            id: result.id,
+            given_name: profile.given_name,
+            last_name: profile.family_name,
+            email: profile.email,
+            image: profile.picture,
+          },
+        };
       }
-  
+
       return token;
     },
     async session({ session, user, token }) {
-      session.user.id = token.id || null;
-      session.user.picture = token.picture;
+      if (token) {
+        session.user = token.user;
+      }
 
       return session;
     },
