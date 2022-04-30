@@ -41,8 +41,6 @@ const postUserQuizData = (
   let createCounter = 0;
   req.body.forEach(async (quizResult: any) => {
     const right_wrong = quizResult.hasAnsweredCorrect ? "right" : "wrong";
-    console.log(quizResult.code);
-    console.log(session.user.id);
 
     await prisma.user_HttpCode.upsert({
       where: {

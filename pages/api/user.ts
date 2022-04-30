@@ -9,12 +9,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   const session = await getSession({ req });
   if (!session) {
-    console.log("Unauthorized")
     res.status(401).json({ error: "Unauthorized - no session provided" });
     return;
   }
   if (!(typeof session.user?.id === "string")) {
-    console.log("Bad Request")
     res
       .status(400)
       .json({ error: "Bad Request - user id must be provided as -string-" });
@@ -22,8 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   switch (method) {
     case "POST":
-    console.log("this is body:", req.body, "this is session:", session)
-    //   postUser(req, res,session);
+      //   postUser(req, res,session);
       break;
     default:
       res.status(405).json({ error: "Method Not Allowed" });
@@ -32,7 +29,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).json({ data: "foo" });
 };
 export default handler;
-
 
 // const postUser = (req: NextApiRequest, res: NextApiResponse, session:Session) => {
 //   req.body.quizResult.forEach(async (quizResult: any) => {

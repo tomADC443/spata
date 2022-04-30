@@ -59,7 +59,6 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
   let userPerformance;
   if (session) {
     userPerformance = await getUserPerformance(session);
-    console.log("USER PERFORMANCE", userPerformance);
   }
 
   return {
