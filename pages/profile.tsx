@@ -1,15 +1,26 @@
 import { GetServerSideProps, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
+
 import Table from "../components/Table/Table";
-import config from "../config";
 import getUserPerformance from "../server/profile/performance";
-import { generateQuizData } from "../server/quiz/generateQuiz";
+import Navbar from "../components/Navbar/Navbar";
 
 const Profile: NextPage<any> = (props) => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
     return <p>Loading...</p>;
+  }
+  if (status !== "authenticated" || !session) {
+    return (
+      <>
+        <Navbar />
+        <div className="content">
+          <h1>Access Denied</h1>
+          <p>Please login before accessing this page.</p>
+        </div>
+      </>
+    );
   }
 
   const headers = ["Code", "Meaning", "Accuracy"];
@@ -25,30 +36,19 @@ const Profile: NextPage<any> = (props) => {
 
   const topTable = topTen.map(toTableRow);
   const bottomTable = bottomTen.map(toTableRow);
-  if (status === "authenticated" && session) {
-
-
-
-
-    return (
-      <>
-
-        <h1>Hey {session?.user.given_name}, this is your profile</h1>
-        <h2>Personal info</h2>
-        <p>session</p>
-        <h2>this are the 10 Codes you know the best</h2>
-        <Table headers={headers} table={topTable}></Table>
-        <h2>These 10 Codes are not that great</h2>
-        <Table headers={headers} table={bottomTable}></Table>
-      </>
-    );
-  }
 
   return (
-    <div>
-      <h1>Access Denied</h1>
-      <p>please login before accessing this page.</p>
-    </div>
+    <>
+      <Navbar />
+      <div className="content">
+        <h1>Hey {session?.user.given_name}, this is your profile</h1>
+
+        <h2>These are the Codes you know the best</h2>
+        <Table headers={headers} table={topTable} />
+        <h2>These are the ones you should train</h2>
+        <Table headers={headers} table={bottomTable} />
+      </div>
+    </>
   );
 };
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
