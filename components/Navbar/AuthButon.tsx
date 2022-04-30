@@ -6,22 +6,18 @@ interface ButtonI {
 }
 
 const AuthButtons = () => {
-  const { data: session, status } = useSession()
-  //const loading = status === 'loading'
+  const { data: session } = useSession();
+
   const button: ButtonI = {
     text: session ? "Logout" : "Login",
     handleClick: session ? signOut : signIn,
-  }
+  };
   return (
     <div>
-      <button onClick={button.handleClick}>{button.text}</button>
+      <button onClick={button.handleClick} className="button subtleButton">
+        {button.text}
+      </button>
     </div>
-  );;
-
+  );
 };
 export default AuthButtons;
-
-
-
-
-
