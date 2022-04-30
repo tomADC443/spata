@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next";
 import { NextPage } from "next";
 import Answers from "../components/Quiz/Answers";
-import Code from "../components/Quiz/Code";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import config from "../config";
+import Navbar from "../components/Navbar/Navbar";
 
 export type Answer = { id: number; phrase: string };
 export type handleAnswerClick = (answerId: number) => void;
@@ -54,32 +54,50 @@ const Quiz: NextPage<QuizProps> = (props) => {
     }
   };
 
+  const numRightAnswers = quizResult?.filter(
+    (i) => i.hasAnsweredCorrect
+  ).length;
+
+  if (quizOver)
+    return (
+      <>
+        <Navbar />
+        <div className="content panel">
+          <span className="quiz-question">
+            Congratulations, you have guessed {numRightAnswers}/
+            {quizResult.length} codes correctly
+          </span>
+
+          <a className="button subtleButton" href="/quiz">
+            Retry
+          </a>
+          <a className="button subtleButton" href="/profile">
+            View your Statistics
+          </a>
+        </div>
+      </>
+    );
+
   return (
     <>
-      {!quizOver && challenge && (
-        <div>
-          <Code code={challenge.code}></Code>
-          <Answers
-            handleClick={handleAnswerClick}
-            answers={challenge.answers}
-          ></Answers>
-          <button onClick={async () => await handleEndQuizClick()}>
-            end quiz
-          </button>
-        </div>
-      )}
-      {quizOver && (
-        <div>
-          <p>Your results</p>
-          <p>{JSON.stringify(quizResult)}</p>
-        </div>
-      )}
+      <Navbar />
+      <div className="content panel">
+        <span className="quiz-question">{challenge.code}</span>
+        <Answers handleClick={handleAnswerClick} answers={challenge.answers} />
+
+        <button
+          onClick={async () => await handleEndQuizClick()}
+          className="button subtleButton"
+        >
+          End Quiz
+        </button>
+      </div>
     </>
   );
 };
 
 const postQuizResult = async (quizResult: quizResult) => {
-  const response = await fetch("api/quiz", {
+  const res = await fetch("api/quiz", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -91,27 +109,15 @@ const postQuizResult = async (quizResult: quizResult) => {
 export default Quiz;
 
 export const getServerSideProps: GetServerSideProps<any> = async () => {
+  const quizData = await fetchQuizData();
 
-  const quizData = await fetchQuizData()
-    
-  
-  console.log("THIS IS DATA:", quizData);
   return {
     props: quizData,
   };
 };
 const fetchQuizData = async () => {
-  return fetch(config.SERVER_URL + "/api/quiz", {
-    method: "GET",
-  }).then((response) => {
-    return response
-      .json()
-      .then((data) => {
-        console.log("DATA:", data);
-        return data;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
+  const res = await fetch(config.SERVER_URL + "/api/quiz");
+  const data = await res.json();
+
+  return data;
 };
