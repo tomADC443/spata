@@ -3,17 +3,19 @@ import { NextPage } from "next";
 import Answers from "../components/Quiz/Answers";
 import Code from "../components/Quiz/Code";
 import { MouseEvent, useState } from "react";
-import { useSession } from "next-auth/react"
-
+import { useSession } from "next-auth/react";
+import config from "../config";
 
 export type Answer = { id: number; phrase: string };
 export type handleAnswerClick = (answerId: number) => void;
+interface QuizData {
+  code: number;
+  rightAnswerId: number;
+  answers: Answer[];
+}
+[];
 interface QuizProps {
-  quizData: Array<{
-    code: number;
-    rightAnswerId: number;
-    answers: Array<Answer>;
-  }>;
+  quizData: QuizData[];
 }
 type UserAnswer = {
   code: number;
@@ -22,22 +24,21 @@ type UserAnswer = {
   hasAnsweredCorrect: boolean;
 };
 type quizResult = UserAnswer[];
-const quizResult:quizResult = [];
+const quizResult: quizResult = [];
 
 const Quiz: NextPage<QuizProps> = (props) => {
-  const { data: session, status } = useSession()
-
+  const { data: session, status } = useSession();
 
   const [index, setIndex] = useState(0);
   const [quizOver, setQuizOver] = useState(false);
   const challenge = props.quizData[index];
 
-  const handleEndQuizClick =async () =>{
-    setQuizOver(true)
-    if(status=="authenticated"){
+  const handleEndQuizClick = async () => {
+    setQuizOver(true);
+    if (status == "authenticated") {
       await postQuizResult(quizResult);
     }
-  }
+  };
   const handleAnswerClick: handleAnswerClick = async (userAnswerId) => {
     const isTrue = userAnswerId === challenge.rightAnswerId ? true : false;
     quizResult.push({
@@ -49,7 +50,7 @@ const Quiz: NextPage<QuizProps> = (props) => {
     if (props.quizData[index + 1]) {
       setIndex(index + 1);
     } else {
-     await handleEndQuizClick();
+      await handleEndQuizClick();
     }
   };
 
@@ -62,7 +63,9 @@ const Quiz: NextPage<QuizProps> = (props) => {
             handleClick={handleAnswerClick}
             answers={challenge.answers}
           ></Answers>
-          <button onClick={async () => await handleEndQuizClick()}>end quiz</button>
+          <button onClick={async () => await handleEndQuizClick()}>
+            end quiz
+          </button>
         </div>
       )}
       {quizOver && (
@@ -75,54 +78,40 @@ const Quiz: NextPage<QuizProps> = (props) => {
   );
 };
 
-const postQuizResult = async (quizResult:quizResult) => {
-  const response = fetch("api/quiz", {
+const postQuizResult = async (quizResult: quizResult) => {
+  const response = await fetch("api/quiz", {
     method: "POST",
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(quizResult),
   });
 };
 export default Quiz;
 
+export const getServerSideProps: GetServerSideProps<any> = async () => {
 
-export const getServerSideProps: GetServerSideProps = async () => {
+  const quizData = await fetchQuizData()
+    
+  
+  console.log("THIS IS DATA:", quizData);
   return {
-    props: {
-      quizData: [
-        {
-          code: 400,
-          rightAnswerId: 1,
-          answers: [
-            { id: 0, phrase: "Continue" },
-            { id: 1, phrase: "Bad Request" },
-            { id: 2, phrase: "Unauthorized" },
-            { id: 3, phrase: "Not Implemented" },
-          ],
-        },
-        {
-          code: 401,
-          rightAnswerId: 2,
-          answers: [
-            { id: 0, phrase: "Expectation Failed" },
-            { id: 1, phrase: "Locked" },
-            { id: 2, phrase: "Forbidden" },
-            { id: 3, phrase: "Method Not Allowed" },
-          ],
-        },
-        {
-          code: 202,
-          rightAnswerId: 3,
-          answers: [
-            { id: 0, phrase: "Use Proxy" },
-            { id: 1, phrase: "Multi-Status" },
-            { id: 2, phrase: "OK" },
-            { id: 3, phrase: "Accepted" },
-          ],
-        },
-      ],
-    },
+    props: quizData,
   };
+};
+const fetchQuizData = async () => {
+  return fetch(config.SERVER_URL + "/api/quiz", {
+    method: "GET",
+  }).then((response) => {
+    return response
+      .json()
+      .then((data) => {
+        console.log("DATA:", data);
+        return data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 };

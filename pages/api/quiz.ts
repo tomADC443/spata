@@ -1,42 +1,48 @@
 import { NextApiResponse } from "next";
 import { NextApiRequest } from "next";
 import { PrismaClient } from "@prisma/client";
-import { getSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { generateQuizData } from "../../server/quiz/generateQuiz";
+import authorize from "../../server/auth/authorize";
 
 const prisma = new PrismaClient();
 
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
-  const session = await getSession({ req });
-  if (!session) {
-    res.status(401).json({ error: "Unauthorized - no session provided" });
-    return;
-  }
-  if (!(typeof session.user?.id === "string")) {
-    res
-      .status(400)
-      .json({ error: "Bad Request - user id must be provided as -string-" });
-    return;
-  }
+
   switch (method) {
     case "POST":
-      postUserQuizData(req, res,session);
+      const session = await authorize (req, res)
+      if (!session) {
+        res.status(401).json({ error: "Unauthorized - no session provided" });
+        return;
+      }
+      const createCounter = postUserQuizData(req, res, session);
+      res.status(201).json({ rowsCreated: createCounter });
+      break;
+    case "GET":
+      const quizData = await generateQuizData();
+
+      res.status(200).json({ quizData: quizData });
       break;
     default:
       res.status(405).json({ error: "Method Not Allowed" });
       return;
   }
-  res.status(200).json({ data: "foo" });
 };
 export default handler;
 
-
-const postUserQuizData = (req: NextApiRequest, res: NextApiResponse, session:Session) => {
+const postUserQuizData = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  session: Session
+): number => {
+  let createCounter = 0;
   req.body.forEach(async (quizResult: any) => {
     const right_wrong = quizResult.hasAnsweredCorrect ? "right" : "wrong";
-    console.log(quizResult.code)
-    console.log(session.user.id)
+    console.log(quizResult.code);
+    console.log(session.user.id);
 
     await prisma.user_HttpCode.upsert({
       where: {
@@ -54,5 +60,7 @@ const postUserQuizData = (req: NextApiRequest, res: NextApiResponse, session:Ses
         [right_wrong]: { increment: 1 },
       },
     });
+    createCounter++;
   });
+  return createCounter;
 };
