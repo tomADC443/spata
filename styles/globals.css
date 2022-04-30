@@ -8,8 +8,8 @@
 
   --white: white;
 
-  --text: #444;
-  --lightText: #888;
+  --text: #9c9c9c;
+  --lightText: rgb(224, 216, 216);
 }
 html, body {
   padding: 0;
