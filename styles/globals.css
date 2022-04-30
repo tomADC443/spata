@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 * {
   box-sizing: border-box;
 }
-:root {
+:root {@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
   --lessDark: #333;
 
@@ -15,11 +16,11 @@ html, body {
   margin: 0;
 
   font-size: 100%;
-  font-family: Avenir;
+  font-family: 'Inter', sans-serif;
 }
 
 table {
-  font-family: arial, sans-serif;
+  font-family: 'Inter', sans-serif;
   border-collapse: collapse;
   width: 100%;
 }
