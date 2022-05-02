@@ -7,7 +7,7 @@
 ### Prerequisites
 
 - Please make sure yarn is installed on your system
-- Please make sure you have a current, stable version of Node.js (version 12, 14 or 16)
+- Please make sure you have a stable version of Node.js installed on your system (version 12, 14 or 16)
 - clone the git repo and access the project folder (cd spata)
 ### Set up locally
 1. Add the .env file that was provided to you ( .../spata/.env)
